@@ -1,0 +1,74 @@
+<script>
+	// let längsteSeite = 0;
+	// let dielenBreite = 0;
+	// let dielenAbstand = 0;
+	// let breiteTerrasse = 0;
+	// let winkel = 0;
+
+	let längsteSeite = 600;
+	let dielenBreite = 11;
+	let dielenAbstand = 5;
+	let breiteTerrasse = 360;
+	let winkel = 60;
+
+	function length(x) {
+		// Convert the angle to radians
+		const angleInRadians = winkel * (Math.PI / 180);
+		// Calculate the pitch using trigonometry
+		const pitch = Math.sin(-angleInRadians);
+		console.log(pitch);
+
+		return pitch * x + längsteSeite;
+	}
+
+	let result = [];
+	function calculate() {
+		const breite = dielenBreite + 0.02 * dielenAbstand;
+		for (let i = 0; i < breiteTerrasse; i += breite) {
+			result = [...result, Math.round(length(i))];
+		}
+		console.log(result);
+	}
+</script>
+
+<body>
+	<h1>Terrassendielen Rechner</h1>
+	<img src="/Skizze.svg" alt="Skizze" width="500px" />
+
+	<form on:submit={calculate}>
+		<h2>Eingabe</h2>
+		<label for="längsteSeite">Längste Seite: </label>
+		<input type="number" bind:value={längsteSeite} min="0" max="10000" /> cm
+		<br />
+		<label for="breite">Dielenbreite: </label>
+		<input type="number" bind:value={dielenBreite} min="0" max="10000" /> cm
+		<br />
+		<label for="dielenabstand">Abstand zwischen Dielen: </label>
+		<input type="number" bind:value={dielenAbstand} min="0" max="7" /> mm
+		<br />
+		<label for="breite">Breite Terrasse: </label>
+		<input type="number" bind:value={breiteTerrasse} min="0" max="10000" /> cm
+		<br />
+		<label for="winkel">Winkel: </label>
+		<input type="number" bind:value={winkel} min="1" max="89" /> °
+		<br /><br />
+		<button type="submit">Berechnen</button>
+	</form>
+
+	<div class="ausgabe">
+		<h2>Ausgabe</h2>
+		<p>Anzahl Dielen: {result.length}</p>
+		<table>
+			<thead>
+				<th>Diele Nr.</th>
+				<th>Dielenlänge</th>
+			</thead>
+			{#each result as plank, i}
+				<tr>
+					<td>{i + 1}</td>
+					<td>{plank} cm</td>
+				</tr>
+			{/each}
+		</table>
+	</div>
+</body>
