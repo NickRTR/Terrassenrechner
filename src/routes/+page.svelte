@@ -11,7 +11,7 @@
 	let dielenBreite = 11;
 	let dielenAbstand = 5;
 	let breiteTerrasse = 360;
-	let winkel = 35;
+	let winkel = 25;
 
 	let plankSizes = [];
 
@@ -19,7 +19,9 @@
 		// Convert the angle to radians
 		const angleInRadians = winkel * (Math.PI / 180);
 		// Calculate the pitch using trigonometry
-		const pitch = Math.sin(-angleInRadians);
+		const pitch = Math.tan(angleInRadians);
+
+		console.log(pitch);
 
 		return pitch * x + längsteSeite;
 	}
@@ -30,6 +32,11 @@
 	};
 
 	function calculate() {
+		result = {
+			planks: [],
+			categorized: {}
+		};
+
 		plankSizes = plankSizes.sort((a, b) => a - b);
 		for (const plankSize of plankSizes) {
 			result.categorized[plankSize] = 0;
@@ -70,7 +77,7 @@
 		<input type="number" bind:value={breiteTerrasse} min="0" max="10000" /> cm
 		<br />
 		<label for="winkel">Winkel: </label>
-		<input type="number" bind:value={winkel} min="10" max="170" /> °
+		<input type="number" bind:value={winkel} min="-80" max="80" /> °
 		<br /><br />
 		<Tags
 			addKeys={[9, 32, 188]}
