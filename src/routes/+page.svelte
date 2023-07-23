@@ -11,7 +11,7 @@
 	let dielenBreite = 11;
 	let dielenAbstand = 5;
 	let breiteTerrasse = 360;
-	let winkel = 60;
+	let winkel = 35;
 
 	let plankSizes = [];
 
@@ -70,7 +70,7 @@
 		<input type="number" bind:value={breiteTerrasse} min="0" max="10000" /> cm
 		<br />
 		<label for="winkel">Winkel: </label>
-		<input type="number" bind:value={winkel} min="1" max="89" /> °
+		<input type="number" bind:value={winkel} min="10" max="170" /> °
 		<br /><br />
 		<Tags
 			addKeys={[9, 32, 188]}
