@@ -1,4 +1,6 @@
 <script>
+	import Tags from "svelte-tags-input";
+
 	// let längsteSeite = 0;
 	// let dielenBreite = 0;
 	// let dielenAbstand = 0;
@@ -11,23 +13,41 @@
 	let breiteTerrasse = 360;
 	let winkel = 60;
 
+	let plankSizes = [];
+
 	function length(x) {
 		// Convert the angle to radians
 		const angleInRadians = winkel * (Math.PI / 180);
 		// Calculate the pitch using trigonometry
 		const pitch = Math.sin(-angleInRadians);
-		console.log(pitch);
 
 		return pitch * x + längsteSeite;
 	}
 
-	let result = [];
+	let result = {
+		planks: [],
+		categorized: {}
+	};
+
 	function calculate() {
+		plankSizes = plankSizes.sort((a, b) => a - b);
+		for (const plankSize of plankSizes) {
+			result.categorized[plankSize] = 0;
+		}
+
 		const breite = dielenBreite + 0.02 * dielenAbstand;
 		for (let i = 0; i < breiteTerrasse; i += breite) {
-			result = [...result, Math.round(length(i))];
+			result.planks = [...result.planks, Math.round(length(i))];
+
+			for (let j = 0; j < plankSizes.length; j++) {
+				if (Math.round(length(i)) <= plankSizes[j]) {
+					result.categorized[plankSizes[j]] += 1;
+					break;
+				}
+			}
 		}
-		console.log(result);
+
+		console.log(result.categorized);
 	}
 </script>
 
@@ -52,23 +72,42 @@
 		<label for="winkel">Winkel: </label>
 		<input type="number" bind:value={winkel} min="1" max="89" /> °
 		<br /><br />
+		<Tags
+			addKeys={[9, 32, 188]}
+			bind:tags={plankSizes}
+			onlyUnique={true}
+			placeholder="z.B. 300, 400, 500"
+			labelText={"Dielenlängen (mm):"}
+			labelShow
+		/>
+		<br />
 		<button type="submit">Berechnen</button>
 	</form>
 
-	<div class="ausgabe">
-		<h2>Ausgabe</h2>
-		<p>Anzahl Dielen: {result.length}</p>
-		<table>
-			<thead>
-				<th>Diele Nr.</th>
-				<th>Dielenlänge</th>
-			</thead>
-			{#each result as plank, i}
-				<tr>
-					<td>{i + 1}</td>
-					<td>{plank} cm</td>
-				</tr>
+	{#if result.planks.length > 0}
+		<div class="ausgabe">
+			<h2>Ausgabe</h2>
+			<p>Anzahl Dielen: {result.planks.length}</p>
+
+			<h3>Aufteilung:</h3>
+			{#each Object.keys(result.categorized) as key}
+				<p>
+					{key} mm: {result.categorized[key]} Diele(n)
+				</p>
 			{/each}
-		</table>
-	</div>
+
+			<table>
+				<thead>
+					<th>Diele Nr.</th>
+					<th>Dielenlänge</th>
+				</thead>
+				{#each result.planks as plank, i}
+					<tr>
+						<td>{i + 1}</td>
+						<td>{plank} cm</td>
+					</tr>
+				{/each}
+			</table>
+		</div>
+	{/if}
 </body>
