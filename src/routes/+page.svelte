@@ -1,29 +1,17 @@
 <script>
 	import Tags from "svelte-tags-input";
 
-	// let längsteSeite = 0;
-	// let dielenBreite = 0;
-	// let dielenAbstand = 0;
-	// let breiteTerrasse = 0;
-	// let winkel = 0;
-
-	let längsteSeite = 600;
-	let dielenBreite = 11;
-	let dielenAbstand = 5;
-	let breiteTerrasse = 360;
-	let winkel = 25;
+	let longestSide = 0;
+	let shortestSide = 0;
+	let plankWidth = 0;
+	let plankSpace = 0;
+	let terraceWidth = 0;
 
 	let plankSizes = [];
 
 	function length(x) {
-		// Convert the angle to radians
-		const angleInRadians = winkel * (Math.PI / 180);
-		// Calculate the pitch using trigonometry
-		const pitch = Math.tan(angleInRadians);
-
-		console.log(pitch);
-
-		return pitch * x + längsteSeite;
+		const pitch = (longestSide - shortestSide) / terraceWidth;
+		return pitch * x + shortestSide;
 	}
 
 	let result = {
@@ -42,8 +30,8 @@
 			result.categorized[plankSize] = 0;
 		}
 
-		const breite = dielenBreite + 0.02 * dielenAbstand;
-		for (let i = 0; i < breiteTerrasse; i += breite) {
+		const width = plankWidth + 0.02 * plankSpace;
+		for (let i = 0; i < terraceWidth; i += width) {
 			result.planks = [...result.planks, Math.round(length(i))];
 
 			for (let j = 0; j < plankSizes.length; j++) {
@@ -53,31 +41,30 @@
 				}
 			}
 		}
-
-		console.log(result.categorized);
 	}
 </script>
 
 <body>
 	<h1>Terrassendielen Rechner</h1>
 	<img src="/Skizze.svg" alt="Skizze" width="500px" />
+	<br />
 
 	<form on:submit={calculate}>
 		<h2>Eingabe</h2>
-		<label for="längsteSeite">Längste Seite: </label>
-		<input type="number" bind:value={längsteSeite} min="0" max="10000" /> cm
+		<label for="longestSide">Längste Seite: </label>
+		<input type="number" bind:value={longestSide} min="0" max="10000" /> cm
 		<br />
-		<label for="breite">Dielenbreite: </label>
-		<input type="number" bind:value={dielenBreite} min="0" max="10000" /> cm
+		<label for="shortestSide">Kürzeste Seite: </label>
+		<input type="number" bind:value={shortestSide} min="0" max="10000" /> cm
 		<br />
-		<label for="dielenabstand">Abstand zwischen Dielen: </label>
-		<input type="number" bind:value={dielenAbstand} min="0" max="7" /> mm
+		<label for="plankWidth">Dielenbreite: </label>
+		<input type="number" bind:value={plankWidth} min="0" max="10000" /> cm
 		<br />
-		<label for="breite">Breite Terrasse: </label>
-		<input type="number" bind:value={breiteTerrasse} min="0" max="10000" /> cm
+		<label for="plankSpace">Abstand zwischen Dielen: </label>
+		<input type="number" bind:value={plankSpace} min="0" max="7" /> mm
 		<br />
-		<label for="winkel">Winkel: </label>
-		<input type="number" bind:value={winkel} min="-80" max="80" /> °
+		<label for="width">Breite Terrasse: </label>
+		<input type="number" bind:value={terraceWidth} min="0" max="10000" /> cm
 		<br /><br />
 		<Tags
 			addKeys={[9, 32, 188]}
