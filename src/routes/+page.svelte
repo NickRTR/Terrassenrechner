@@ -27,9 +27,11 @@
 			categorized: {}
 		};
 
+		let categorizedPlanks = 0;
+
 		plankSizes = plankSizes.sort((a, b) => a - b);
 		for (const plankSize of plankSizes) {
-			result.categorized[plankSize] = 0;
+			result.categorized[plankSize + "mm"] = 0;
 		}
 
 		const width = plankWidth + 0.02 * plankSpace;
@@ -38,11 +40,16 @@
 
 			for (let j = 0; j < plankSizes.length; j++) {
 				if (Math.round(length(i)) <= plankSizes[j]) {
-					result.categorized[plankSizes[j]] += 1;
+					result.categorized[plankSizes[j] + "mm"] += 1;
+					categorizedPlanks++;
 					break;
 				}
 			}
+			result.categorized[plankSizes[plankSizes.length - 1] + "mm+"] += 1;
 		}
+
+		result.categorized[plankSizes[plankSizes.length - 1] + "mm+"] =
+			result.planks.length - categorizedPlanks;
 
 		if (result.planks.length === 0) {
 			result.planks = null;
@@ -98,8 +105,8 @@
 			{#if plankSizes.length > 0}
 				<h3>Aufteilung:</h3>
 				{#each Object.keys(result.categorized) as key}
-					<p>
-						{key} mm: {result.categorized[key]} Diele(n)
+					<p class:warning={key.includes("+")}>
+						{key}: {result.categorized[key]} Diele(n)
 					</p>
 				{/each}
 			{/if}
@@ -161,5 +168,10 @@
 
 	.error {
 		color: red;
+	}
+
+	.warning {
+		color: red;
+		font-weight: 600;
 	}
 </style>
