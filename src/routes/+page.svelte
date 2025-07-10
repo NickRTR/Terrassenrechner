@@ -1,57 +1,60 @@
-<script>
-	import autoselect from "svelte-autoselect";
-	import MultiInput from "$lib/components/MultiInput.svelte";
+<script lang="ts">
+	import autoselect from "svelte-autoselect"
+	import MultiInput from "$lib/components/MultiInput.svelte"
 
-	let longestSide = $state(0);
-	let shortestSide = $state(0);
-	let plankWidth = $state(0);
-	let plankSpace = $state(0);
-	let terraceWidth = $state(0);
+	let longestSide = $state(0)
+	let shortestSide = $state(0)
+	let plankWidth = $state(0)
+	let plankSpace = $state(0)
+	let terraceWidth = $state(0)
 
-	let plankSizes = $state([]);
+	let plankSizes = $state<number[]>([])
 
-	function length(x) {
-		const pitch = (longestSide - shortestSide) / terraceWidth;
-		return pitch * x + shortestSide;
+	function length(x: number) {
+		const pitch = (longestSide - shortestSide) / terraceWidth
+		return pitch * x + shortestSide
 	}
 
-	let result = $state({
+	let result = $state<{
+		planks: number[] | null
+		categorized: Record<string, number>
+	}>({
 		planks: [],
 		categorized: {}
-	});
+	})
 
 	function calculate() {
 		result = {
 			planks: [],
 			categorized: {}
-		};
-
-		let categorizedPlanks = 0;
-
-		plankSizes = plankSizes.sort((a, b) => a - b);
-		for (const plankSize of plankSizes) {
-			result.categorized[plankSize + "cm"] = 0;
 		}
 
-		const width = plankWidth + 0.05 * plankSpace;
+		let categorizedPlanks = 0
+
+		plankSizes = plankSizes.sort((a, b) => a - b)
+		for (const plankSize of plankSizes) {
+			result.categorized[plankSize + "cm"] = 0
+		}
+
+		const width = plankWidth + 0.05 * plankSpace
 		for (let i = 0; i < terraceWidth; i += width) {
-			result.planks = [...result.planks, Math.round(length(i))];
+			result.planks = [...(result.planks as number[]), Math.round(length(i))]
 
 			for (let j = 0; j < plankSizes.length; j++) {
 				if (Math.round(length(i)) <= plankSizes[j]) {
-					result.categorized[plankSizes[j] + "cm"] += 1;
-					categorizedPlanks++;
-					break;
+					result.categorized[plankSizes[j] + "cm"] += 1
+					categorizedPlanks++
+					break
 				}
 			}
-			result.categorized[plankSizes[plankSizes.length - 1] + "cm+"] += 1;
+			result.categorized[plankSizes[plankSizes.length - 1] + "cm+"] += 1
 		}
 
 		result.categorized[plankSizes[plankSizes.length - 1] + "cm+"] =
-			result.planks.length - categorizedPlanks;
+			(result.planks as number[]).length - categorizedPlanks
 
-		if (result.planks.length === 0) {
-			result.planks = null;
+		if ((result.planks as number[]).length === 0) {
+			result.planks = null
 		}
 	}
 </script>

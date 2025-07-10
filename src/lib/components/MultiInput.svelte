@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	let {
 		tags = $bindable([]),
 		addKeySet = [13, 188, 32],
@@ -7,53 +7,53 @@
 		labelText = "",
 		labelShow = false,
 		convertToNumber = false
-	} = $props();
+	} = $props()
 
-	let inputValue = $state("");
-	let inputElement = $state();
+	let inputValue = $state("")
+	let inputElement: HTMLInputElement | null | undefined = $state()
 
 	function focusInput() {
-		setTimeout(() => inputElement?.focus(), 0);
+		setTimeout(() => inputElement?.focus(), 0)
 	}
 
-	function addTag(value = inputValue.trim()) {
-		if (!value) return;
-		let processedValue = convertToNumber ? Number(value) : value;
-		if (convertToNumber && isNaN(processedValue)) return;
+	function addTag(value: string = inputValue.trim()) {
+		if (!value) return
+		let processedValue = convertToNumber ? Number(value) : value
+		if (convertToNumber && isNaN(processedValue as number)) return
 		if (onlyUnique && tags.includes(processedValue)) {
-			inputValue = "";
-			return;
+			inputValue = ""
+			return
 		}
-		tags = [...tags, processedValue];
-		inputValue = "";
+		tags = [...tags, processedValue]
+		inputValue = ""
 	}
 
-	function removeTag(index) {
-		tags = tags.filter((_, i) => i !== index);
-		focusInput();
+	function removeTag(index: number) {
+		tags = tags.filter((_, i) => i !== index)
+		focusInput()
 	}
 
-	function handleKeydown(event) {
+	function handleKeydown(event: KeyboardEvent) {
 		if (addKeySet.includes(event.keyCode) || addKeySet.includes(event.which)) {
-			event.preventDefault();
-			addTag();
-			return;
+			event.preventDefault()
+			addTag()
+			return
 		}
 		if (event.key === "Backspace" && inputValue === "" && tags.length > 0) {
-			event.preventDefault();
-			removeTag(tags.length - 1);
+			event.preventDefault()
+			removeTag(tags.length - 1)
 		}
 	}
 
-	function handlePaste(event) {
-		event.preventDefault();
-		const pastedText = event.clipboardData.getData("text");
-		const values = pastedText.split(/[,\s]+/).filter((v) => v.trim());
-		values.forEach((value) => addTag(value.trim()));
+	function handlePaste(event: ClipboardEvent) {
+		event.preventDefault()
+		const pastedText = event.clipboardData?.getData("text") || ""
+		const values = pastedText.split(/[,\s]+/).filter((v) => v.trim())
+		values.forEach((value) => addTag(value.trim()))
 	}
 
 	function handleBlur() {
-		if (inputValue.trim()) addTag();
+		if (inputValue.trim()) addTag()
 	}
 </script>
 
