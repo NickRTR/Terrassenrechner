@@ -67,30 +67,71 @@
 
 	<form onsubmit={calculate}>
 		<h2>Eingabe</h2>
-		<label for="longestSide">Längste Seite: </label>
-		<input type="number" use:autoselect bind:value={longestSide} min="0" max="10000" /> cm
-		<br />
-		<label for="shortestSide">Kürzeste Seite: </label>
-		<input type="number" use:autoselect bind:value={shortestSide} min="0" max="10000" /> cm
-		<br />
-		<label for="plankWidth">Dielenbreite: </label>
-		<input type="number" use:autoselect bind:value={plankWidth} min="0" max="10000" /> cm
-		<br />
-		<label for="plankSpace">Abstand zwischen Dielen: </label>
-		<input type="number" use:autoselect bind:value={plankSpace} min="0" max="10" /> mm
-		<br />
-		<label for="width">Terrassenbreite: </label>
-		<input type="number" use:autoselect bind:value={terraceWidth} min="0" max="10000" /> cm
-		<br /><br />
-		<div class="tagsContainer">
-			<MultiInput
-				bind:tags={plankSizes}
-				placeholder="z.B. 300, 400, 500"
-				labelText={"Dielenlängen (cm):"}
-				labelShow
-				convertToNumber={true}
+
+		<div class="inputs">
+			<label for="longestSide">Längste Seite:</label>
+			<input
+				type="number"
+				id="longestSide"
+				use:autoselect
+				bind:value={longestSide}
+				min="0"
+				max="10000"
 			/>
+			<span class="unit">cm</span>
+
+			<label for="shortestSide">Kürzeste Seite:</label>
+			<input
+				type="number"
+				id="shortestSide"
+				use:autoselect
+				bind:value={shortestSide}
+				min="0"
+				max="10000"
+			/>
+			<span class="unit">cm</span>
+
+			<label for="plankWidth">Dielenbreite:</label>
+			<input
+				type="number"
+				id="plankWidth"
+				use:autoselect
+				bind:value={plankWidth}
+				min="0"
+				max="10000"
+			/>
+			<span class="unit">cm</span>
+
+			<label for="plankSpace">Abstand zwischen Dielen:</label>
+			<input
+				type="number"
+				id="plankSpace"
+				use:autoselect
+				bind:value={plankSpace}
+				min="0"
+				max="10000"
+			/>
+			<span class="unit">mm</span>
+
+			<label for="terraceWidth">Terrassenbreite:</label>
+			<input
+				type="number"
+				id="terraceWidth"
+				use:autoselect
+				bind:value={terraceWidth}
+				min="0"
+				max="10000"
+			/>
+			<span class="unit">cm</span>
 		</div>
+
+		<MultiInput
+			bind:tags={plankSizes}
+			placeholder="z.B. 300, 400, 500"
+			labelText={"Dielenlängen (cm):"}
+			labelShow
+			convertToNumber={true}
+		/>
 		<br />
 		<button type="submit">Berechnen</button>
 	</form>
@@ -149,12 +190,32 @@
 		text-underline-offset: 7px;
 	}
 
-	.tagsContainer {
+	form {
 		width: 400px;
+	}
+
+	.inputs {
+		display: grid;
+		grid-template-columns: 3fr 1fr auto;
+		gap: 0.5rem;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+
+	.inputs input {
+		padding: 0.5rem;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
+
+	.unit {
+		color: #666;
+		font-size: 0.9rem;
 	}
 
 	button {
 		margin-top: 0.25rem;
+		margin-bottom: 1rem;
 		font-weight: bold;
 	}
 
