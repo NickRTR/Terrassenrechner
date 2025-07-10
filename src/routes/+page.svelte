@@ -1,25 +1,24 @@
 <script>
 	import autoselect from "svelte-autoselect";
+	import MultiInput from "$lib/components/MultiInput.svelte";
 
-	import Tags from "svelte-tags-input";
+	let longestSide = $state(0);
+	let shortestSide = $state(0);
+	let plankWidth = $state(0);
+	let plankSpace = $state(0);
+	let terraceWidth = $state(0);
 
-	let longestSide = 0;
-	let shortestSide = 0;
-	let plankWidth = 0;
-	let plankSpace = 0;
-	let terraceWidth = 0;
-
-	let plankSizes = [];
+	let plankSizes = $state([]);
 
 	function length(x) {
 		const pitch = (longestSide - shortestSide) / terraceWidth;
 		return pitch * x + shortestSide;
 	}
 
-	let result = {
+	let result = $state({
 		planks: [],
 		categorized: {}
-	};
+	});
 
 	function calculate() {
 		result = {
@@ -57,13 +56,13 @@
 	}
 </script>
 
-<body>
+<div>
 	<h1>Terrassendielen Rechner</h1>
 	<p class="emphasize">Terrassenrechner zur Berechnung von Terrassenschrägen</p>
 	<img src="/Sketch.svg" alt="Skizze" width="500px" />
 	<br />
 
-	<form on:submit={calculate}>
+	<form onsubmit={calculate}>
 		<h2>Eingabe</h2>
 		<label for="longestSide">Längste Seite: </label>
 		<input type="number" use:autoselect bind:value={longestSide} min="0" max="10000" /> cm
@@ -81,13 +80,12 @@
 		<input type="number" use:autoselect bind:value={terraceWidth} min="0" max="10000" /> cm
 		<br /><br />
 		<div class="tagsContainer">
-			<Tags
-				addKeys={[9, 32, 188]}
+			<MultiInput
 				bind:tags={plankSizes}
-				onlyUnique={true}
 				placeholder="z.B. 300, 400, 500"
-				labelText={"Dielenlängen (mm):"}
+				labelText={"Dielenlängen (cm):"}
 				labelShow
+				convertToNumber={true}
 			/>
 		</div>
 		<br />
@@ -114,19 +112,23 @@
 			<h3>Auflistung:</h3>
 			<table>
 				<thead>
-					<th>Diele Nr.</th>
-					<th>Dielenlänge</th>
-				</thead>
-				{#each result.planks as plank, i}
 					<tr>
-						<td>{i + 1}</td>
-						<td>{plank} cm</td>
+						<th>Diele Nr.</th>
+						<th>Dielenlänge</th>
 					</tr>
-				{/each}
+				</thead>
+				<tbody>
+					{#each result.planks as plank, i}
+						<tr>
+							<td>{i + 1}</td>
+							<td>{plank} cm</td>
+						</tr>
+					{/each}
+				</tbody>
 			</table>
 		</div>
 	{/if}
-</body>
+</div>
 
 <style>
 	@font-face {
