@@ -30,24 +30,24 @@
 
 		plankSizes = plankSizes.sort((a, b) => a - b);
 		for (const plankSize of plankSizes) {
-			result.categorized[plankSize + "mm"] = 0;
+			result.categorized[plankSize + "cm"] = 0;
 		}
 
-		const width = plankWidth + 0.02 * plankSpace;
+		const width = plankWidth + 0.05 * plankSpace;
 		for (let i = 0; i < terraceWidth; i += width) {
 			result.planks = [...result.planks, Math.round(length(i))];
 
 			for (let j = 0; j < plankSizes.length; j++) {
 				if (Math.round(length(i)) <= plankSizes[j]) {
-					result.categorized[plankSizes[j] + "mm"] += 1;
+					result.categorized[plankSizes[j] + "cm"] += 1;
 					categorizedPlanks++;
 					break;
 				}
 			}
-			result.categorized[plankSizes[plankSizes.length - 1] + "mm+"] += 1;
+			result.categorized[plankSizes[plankSizes.length - 1] + "cm+"] += 1;
 		}
 
-		result.categorized[plankSizes[plankSizes.length - 1] + "mm+"] =
+		result.categorized[plankSizes[plankSizes.length - 1] + "cm+"] =
 			result.planks.length - categorizedPlanks;
 
 		if (result.planks.length === 0) {
@@ -74,7 +74,7 @@
 		<input type="number" use:autoselect bind:value={plankWidth} min="0" max="10000" /> cm
 		<br />
 		<label for="plankSpace">Abstand zwischen Dielen: </label>
-		<input type="number" use:autoselect bind:value={plankSpace} min="0" max="7" /> mm
+		<input type="number" use:autoselect bind:value={plankSpace} min="0" max="10" /> mm
 		<br />
 		<label for="width">Terrassenbreite: </label>
 		<input type="number" use:autoselect bind:value={terraceWidth} min="0" max="10000" /> cm
@@ -151,8 +151,8 @@
 	}
 
 	button {
+		margin-top: 0.25rem;
 		font-weight: bold;
-		margin-bottom: 1.5rem;
 	}
 
 	table,
